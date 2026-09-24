@@ -1,0 +1,73 @@
+:root {
+  --night: #10151f; --ink: #1b2230; --panel: #1f2736; --brass: #b99a5b;
+  --pearl: #e6e9ee; --lapis: #4d6d91; --text: #d9dee7; --muted: #8e98a8;
+  font-family: system-ui, sans-serif; color: var(--text); background: var(--night);
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh;
+  background: radial-gradient(ellipse 70% 60% at 35% 40%, #243049 0%, var(--night) 70%); }
+main { max-width: 1040px; margin: 0 auto; padding: 48px 32px; }
+.layout { display: grid; grid-template-columns: minmax(280px, 620px) minmax(220px, 1fr); gap: 48px; align-items: start; }
+button { cursor: pointer; font: inherit; }
+
+/* The frame: dark lacquer with a brass inlay; the coordinates sit on it, as on a real board. */
+.frame { padding: 26px; border-radius: 10px;
+  background: linear-gradient(145deg, #273043, var(--ink) 55%, #141a25);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, .55), 0 2px 0 rgba(255, 255, 255, .06) inset; }
+#board { position: relative; display: grid; grid-template-columns: repeat(8, 1fr);
+  outline: 2px solid var(--brass); outline-offset: 5px; box-shadow: 0 0 0 1px #000; }
+/* Lacquer sheen across the whole board. */
+#board::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(125deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0) 70%, rgba(0, 0, 0, .12) 100%); }
+
+.square { position: relative; aspect-ratio: 1; border: 0; padding: 0; border-radius: 0;
+  display: grid; place-items: center; }
+.light { background: linear-gradient(135deg, #f1f3f6, var(--pearl) 60%, #d9dde4); }
+.dark { background: linear-gradient(135deg, #5a7ca2, var(--lapis) 60%, #41607f); }
+.square.selected { box-shadow: inset 0 0 0 3px var(--brass), inset 0 0 22px rgba(233, 196, 106, .7); }
+.target::after { content: ''; position: absolute; width: 26%; height: 26%; border-radius: 50%;
+  background: rgba(20, 30, 48, .35); }
+.target.occupied::after { width: 88%; height: 88%; background: none;
+  border: 4px solid rgba(20, 30, 48, .4); }
+.square.checked { box-shadow: inset 0 0 26px 6px rgba(229, 57, 53, .9); }
+
+.piece { font-family: 'DejaVu Sans', 'Segoe UI Symbol', serif; line-height: 1;
+  font-size: clamp(28px, 5.8vw, 56px); user-select: none; transition: transform .12s ease; }
+.piece.white { color: #fbfbf8; -webkit-text-stroke: 1.4px #1b2230; paint-order: stroke fill;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, .4)); }
+.piece.black { color: #161b26; -webkit-text-stroke: .6px #5d6b82; paint-order: stroke fill;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, .45)); }
+.square:hover .piece { transform: translateY(-2px); }
+.selected .piece { transform: translateY(-3px) scale(1.04); }
+
+.square small { position: absolute; font-size: 12px; font-weight: 600; line-height: 1;
+  color: var(--brass); pointer-events: none; }
+.square small.rank { left: -19px; top: 50%; transform: translateY(-50%); }
+.square small.file { bottom: -21px; left: 50%; transform: translateX(-50%); }
+button:focus-visible { outline: 3px solid #7fb2ff; outline-offset: -3px; }
+
+aside { background: var(--panel); border-radius: 8px; padding: 20px 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .35); }
+aside h2 { margin: 0 0 6px; font-size: 1.25rem; color: #fff; font-weight: 600; }
+aside h3 { font-size: .85rem; font-weight: 600; color: var(--muted); margin: 20px 0 6px; }
+#controls { display: flex; gap: 8px; flex-wrap: wrap; }
+#controls button { padding: 8px 16px; border: 1px solid #3a465b; background: #283246;
+  color: #fff; border-radius: 6px; }
+#controls button:hover { background: #313d55; border-color: var(--brass); }
+#message { min-height: 1.5em; margin: 0 0 8px; color: #ff8a80; }
+#moves { max-height: 320px; overflow: auto; margin: 0; padding-left: 2.2em;
+  font-variant-numeric: tabular-nums; color: var(--muted); }
+#moves li { padding: 2px 0; }
+#moves li span { display: inline-block; min-width: 4.8em; color: var(--text); }
+#captured { margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
+#captured .piece { font-size: 26px; padding: 3px 4px; border-radius: 4px;
+  background: linear-gradient(135deg, #f1f3f6, var(--pearl) 60%, #d9dde4); }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .piece { transition: none; } }
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; gap: 24px; }
+  main { padding: 16px 12px; }
+  .frame { padding: 20px; }
+  .square small.rank { left: -15px; } .square small.file { bottom: -17px; }
+}
